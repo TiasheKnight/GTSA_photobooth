@@ -1,6 +1,6 @@
 Flask==3.0.0
 Flask-Mail==0.10.0
-email-validator==2.1.0
+email-validator==2.2.0
 Werkzeug==3.0.1
 python-dotenv
 gunicorn==21.2.0
