@@ -1,0 +1,22 @@
+# .dockerignore - Exclude unnecessary files from Docker image
+
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+env/
+.env/
+*.log
+.git
+.gitignore
+.dockerignore
+README.md
+DEPLOYMENT.md
+Ver1/
+Untitled/
+.pytest_cache/
+*.egg-info/
+.DS_Store

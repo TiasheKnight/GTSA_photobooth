@@ -1,12 +1,42 @@
 # GTSA Photobooth - Deployment Guide
 
+## Local Development with Docker
+
+### Prerequisites
+- Docker Desktop installed
+- `.env` file with configuration
+
+### Running Locally
+
+```bash
+# Build and start container
+docker-compose up --build
+
+# App will be available at http://localhost:5000
+```
+
+**Stopping the container:**
+```bash
+docker-compose down
+```
+
+### Rebuilding Dependencies
+
+If you add new packages to `requirements.txt`:
+```bash
+docker-compose up --build
+```
+
+---
+
 ## Deployment to Render
 
-This guide will help you deploy your Flask photobooth app to Render.
+This guide will help you deploy your Flask photobooth app to Render using Docker.
 
 ### Prerequisites
 - GitHub account
 - Render account (free at https://render.com)
+- Docker image built and tested locally
 
 ### Step 1: Push Code to GitHub
 
@@ -40,12 +70,14 @@ If you need to create a new GitHub repo:
 | Setting | Value |
 |---------|-------|
 | Name | `gtsa-photobooth` |
-| Environment | `Python 3` |
-| Region | `Oregon` (or closest to you) |
+| Environment | `Docker` (auto-detected from Dockerfile) |
+| Region | `Ohio` (or closest to you) |
 | Branch | `main` |
-| Build Command | `pip install -r requirements.txt` |
-| Start Command | `gunicorn app:app` |
+| Build Command | (Leave empty - Docker builds automatically) |
+| Start Command | (Leave empty - Procfile used) |
 | Plan | `Free` |
+
+**Note:** Render will automatically detect the `Dockerfile` and build your image. No build/start commands needed.
 
 ### Step 4: Add Environment Variables
 
