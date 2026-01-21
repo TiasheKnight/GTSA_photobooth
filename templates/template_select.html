@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container py-4">
+<!-- Curtain overlay for transition animation -->
+<div id="curtainLeft" class="page-curtain page-curtain-left"></div>
+<div id="curtainRight" class="page-curtain page-curtain-right"></div>
+
+<div id="boothContent" class="booth-content container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
             <h2 class="mb-1">Pick a Photostrip</h2>
-            <div class="text-muted">Hover to zoom. Click to select.</div>
+            <div class="text-white">Hover to zoom. Click to select.</div>
         </div>
         <a class="btn btn-outline-light" href="/">Exit Booth</a>
     </div>
@@ -17,10 +21,10 @@
             On iPhone/iPad, camera access requires <code>https://</code> (or <code>localhost</code>).
         </div>
     </div>
-    
+
     <div class="d-flex gap-2 align-items-center mb-4">
         <button id="startPreviewBtn" class="btn btn-primary btn-lg">Enable camera preview</button>
-        <span id="cameraStatus" class="text-muted small"></span>
+        <span id="cameraStatus" class="text-white small"></span>
     </div>
 
     <video id="webcam" autoplay playsinline muted class="visually-hidden"></video>
@@ -47,6 +51,26 @@
 </div>
 
 <script>
+// Curtain opening animation on page load
+document.addEventListener('DOMContentLoaded', function() {
+  const curtainLeft = document.getElementById('curtainLeft');
+  const curtainRight = document.getElementById('curtainRight');
+  const boothContent = document.getElementById('boothContent');
+  
+  // Trigger opening animation
+  setTimeout(() => {
+    curtainLeft.classList.add('opening');
+    curtainRight.classList.add('opening');
+    boothContent.classList.add('fade-in');
+  }, 100);
+  
+  // Remove curtains from DOM after animation completes
+  setTimeout(() => {
+    curtainLeft.style.display = 'none';
+    curtainRight.style.display = 'none';
+  }, 1500);
+});
+
 function selectTemplate(id) {
   const input = document.getElementById('template_id');
   input.value = String(id);

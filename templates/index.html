@@ -5,14 +5,13 @@
     <div class="row align-items-center g-4">
         <div class="col-12 col-lg-6 text-center text-lg-start">
             <h1 class="mb-3">GTSA Photobooth</h1>
-            <p class="lead text-muted mb-4">
+            <p class="lead text-white mb-4">
                 Step in, pick a photostrip, choose a filter, and we’ll snap 3 photos automatically.
             </p>
 
             <div class="d-flex flex-wrap gap-2 mb-4">
                 <span class="badge rounded-pill text-bg-secondary">3 shots</span>
                 <span class="badge rounded-pill text-bg-secondary">3 seconds apart</span>
-                <span class="badge rounded-pill text-bg-secondary">$0 per photo</span>
                 <span class="badge rounded-pill text-bg-secondary">Email delivery</span>
             </div>
 
@@ -20,22 +19,17 @@
                 Enter Photobooth
             </button>
 
-            <div class="small text-muted mt-3">
+            <div class="small text-white mt-3">
                 Camera permission is requested on the next screen.
-                <!-- On iPhone/iPad, camera access requires <code>https://</code> (or <code>localhost</code>). -->
             </div>
         </div>
 
         <div class="col-12 col-lg-6">
             <div id="boothStage" class="booth-stage mx-auto">
-                <img src="/static/img/booth_front.svg" class="img-fluid" alt="Photobooth front">
-
-                <img id="coin" src="/static/img/coin.svg" class="booth-coin" alt="coin">
-
-                <div class="booth-curtains" aria-hidden="true">
-                    <img class="booth-curtain booth-curtain-left" src="/static/img/curtain_left.svg" alt="">
-                    <img class="booth-curtain booth-curtain-right" src="/static/img/curtain_right.svg" alt="">
-                </div>
+                <!-- Animated SVG slideshow -->
+                <svg id="boothSlideshow" class="booth-svg" width="100%" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
+                    <image id="slideImage" href="/static/img/photobooth_1.svg" width="100%" height="100%"/>
+                </svg>
             </div>
 
             <div class="text-center mt-4">
@@ -51,26 +45,35 @@
 </div>
 
 <script>
+// SVG slideshow animation
+const slideImages = [
+  '/static/img/photobooth_1.svg',
+  '/static/img/photobooth_2.svg',
+  '/static/img/photobooth_3.svg'
+];
+let currentSlide = 0;
+
+function rotateSlides() {
+  const slideImage = document.getElementById('slideImage');
+  slideImage.setAttribute('href', slideImages[currentSlide]);
+  currentSlide = (currentSlide + 1) % slideImages.length;
+}
+
+// Start slideshow
+let slideInterval = setInterval(rotateSlides, 200);
+
 function enterBooth() {
+  // Stop slideshow
+  clearInterval(slideInterval);
+  
   const btn = document.getElementById('enterBtn');
   btn.disabled = true;
-  btn.innerText = 'Inserting coin...';
+  btn.innerText = 'Opening...';
 
-  const stage = document.getElementById('boothStage');
-  const coin = document.getElementById('coin');
-
-  coin.classList.add('booth-coin-drop');
-
-  // Open curtains shortly after coin drop starts
-  setTimeout(() => {
-    btn.innerText = 'Opening curtains...';
-    stage.classList.add('booth-open');
-  }, 650);
-
-  // Transition into the booth experience
+  // Redirect to template select (which will show curtain animation)
   setTimeout(() => {
     window.location.href = "/template_select";
-  }, 1600);
+  }, 300);
 }
 </script>
 
