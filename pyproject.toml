@@ -1,0 +1,8 @@
+[tool.poetry]
+name = "gtsa-photobooth"
+version = "0.1.0"
+description = ""
+authors = []
+
+[tool.poetry.dependencies]
+python = "^3.11"
