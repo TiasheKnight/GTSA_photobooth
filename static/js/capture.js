@@ -1,57 +1,38 @@
 const video = document.getElementById("webcam");
 const previewCanvas = document.getElementById("previewCanvas");
-const ctx = previewCanvas.getContext("2d");
-const shutter = new Audio('/static/sfx/shutter.wav');
+const ctx = previewCanvas?.getContext("2d");
+const shutter = new Audio("/static/sfx/shutter.wav");
+const startBtn = document.getElementById("startCaptureBtn");
 
 let photos = [];
 let countdownEl = document.getElementById("countdown");
 
-async function main() {
-    // wait for webcam
-    await startWebcam();
-
-    runCountdown(3, async () => {
-        await takeThreePhotos();
-        compositePhotostrip();
-        showNextButton();
-    });
+function sleep(ms) {
+    return new Promise((res) => setTimeout(res, ms));
 }
 
-function runCountdown(seconds, callback) {
-    let time = seconds;
-    countdownEl.innerText = time;
-
-    let interval = setInterval(() => {
-        time--;
-        if (time <= 0) {
-            clearInterval(interval);
-            countdownEl.innerText = "Smile!";
-            setTimeout(() => {
-                countdownEl.innerText = "";
-                callback();
-            }, 500);
-        } else {
-            countdownEl.innerText = time;
-        }
-    }, 1000);
+function flashScreen() {
+    const flash = document.getElementById("flash");
+    if (!flash) return;
+    flash.classList.add("flash-show");
+    setTimeout(() => flash.classList.remove("flash-show"), 120);
 }
 
-async function takeThreePhotos() {
-    for (let i = 0; i < 3; i++) {
-        await new Promise(res => setTimeout(res, 1000)); // pause before shot
-        photos.push(captureFrame());
-        countdownEl.innerText = (i < 2) ? "Next..." : "Done!";
-        await new Promise(res => setTimeout(res, 1000));
-        countdownEl.innerText = "";
+async function runShotCountdown(seconds) {
+    for (let t = seconds; t > 0; t--) {
+        if (countdownEl) countdownEl.innerText = String(t);
+        await sleep(1000);
     }
+    if (countdownEl) countdownEl.innerText = "Smile!";
+    await sleep(250);
+    if (countdownEl) countdownEl.innerText = "";
 }
 
 function captureFrame() {
-    shutter.play();
-    let tempCanvas = document.createElement("canvas");
+    const tempCanvas = document.createElement("canvas");
     tempCanvas.width = video.videoWidth;
     tempCanvas.height = video.videoHeight;
-    let tctx = tempCanvas.getContext("2d");
+    const tctx = tempCanvas.getContext("2d");
 
     tctx.filter = getCanvasFilter(FILTER);
     tctx.drawImage(video, 0, 0);
@@ -59,40 +40,90 @@ function captureFrame() {
     return tempCanvas;
 }
 
-function compositePhotostrip() {
-    const template = new Image();
-    template.src = `/static/photostrip_templates/template${TEMPLATE_ID}.png`;
+async function compositePhotostrip() {
+    const { img: template, frames: frameRects, overlay } = await Photostrip.loadTemplate(TEMPLATE_ID);
 
-    template.onload = () => {
-        ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+    // Match canvas to template size for crisp output
+    previewCanvas.width = template.naturalWidth || previewCanvas.width;
+    previewCanvas.height = template.naturalHeight || previewCanvas.height;
 
-        // Example layout (you will adjust to match your PNG)
-        const slotW = 362;
-        const slotH = 216;
-        const offsetX = 18;
-        const offsetsY = [10, 250, 496];
+    ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
 
-        // Draw each captured photo
-        photos.forEach((photo, i) => {
-            ctx.drawImage(photo, offsetX, offsetsY[i], slotW, slotH);
-        });
+    // Draw photos into detected frames
+    frameRects.forEach((r, i) => {
+        const photo = photos[i];
+        if (!photo) return;
+        Photostrip.drawSourceCover(ctx, photo, r.x, r.y, r.w, r.h);
+    });
 
-        // Draw template overlay last
-        ctx.drawImage(template, 0, 0, previewCanvas.width, previewCanvas.height);
+    // Draw overlay with transparent frame holes on top (keeps stickers/logos above)
+    ctx.drawImage(overlay, 0, 0);
 
-        // Export to base64 for emailing
-        let dataUrl = previewCanvas.toDataURL("image/png");
-        sessionStorage.setItem('last_photostrip', dataUrl);
-        // document.getElementById("photostrip_data").value = dataUrl;
-        document.addEventListener("DOMContentLoaded", function() {
-            document.getElementById("photostrip_data").value = dataUrl;
-        });
-        
-    };
+    const dataUrl = previewCanvas.toDataURL("image/png");
+    sessionStorage.setItem("last_photostrip", dataUrl);
+
+    const hidden = document.getElementById("photostrip_data");
+    if (hidden) hidden.value = dataUrl;
 }
 
 function showNextButton() {
-    document.getElementById("sendBtn").classList.remove("d-none");
+    const btn = document.getElementById("sendBtn");
+    if (btn) btn.classList.remove("d-none");
 }
 
-main();
+async function beginCaptureFlow() {
+    if (!video || !previewCanvas || !ctx) return;
+
+    if (startBtn) {
+        startBtn.disabled = true;
+        startBtn.innerText = "Starting camera...";
+    }
+
+    try {
+        // Must be triggered by a user gesture on iOS/Safari
+        await startWebcam({ videoEl: video, facingMode: "user" });
+    } catch (err) {
+        if (startBtn) {
+            startBtn.disabled = false;
+            startBtn.innerText = "Start Camera & Begin";
+        }
+        alert("Camera access is required. On iPhone/iPad, you must use https:// or localhost.");
+        return;
+    }
+
+    if (startBtn) startBtn.classList.add("d-none");
+
+    photos = [];
+    for (let i = 0; i < 3; i++) {
+        await runShotCountdown(3);
+        photos.push(captureFrame());
+
+        shutter.currentTime = 0;
+        shutter.play().catch(() => {});
+        flashScreen();
+
+        if (i < 2) {
+            if (countdownEl) countdownEl.innerText = "Next photo...";
+            await sleep(750);
+            if (countdownEl) countdownEl.innerText = "";
+        }
+
+        // Small pause after shot
+        await sleep(250);
+    }
+
+    await compositePhotostrip();
+    showNextButton();
+
+    // Save battery / release camera as soon as we have the strip
+    try { stopWebcam("webcam"); } catch (_) {}
+}
+
+if (startBtn) {
+    startBtn.addEventListener("click", () => {
+        beginCaptureFlow();
+    });
+} else {
+    // Desktop fallback (may be blocked on iOS)
+    beginCaptureFlow();
+}

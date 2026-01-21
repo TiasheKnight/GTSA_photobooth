@@ -27,7 +27,8 @@ def index():
 
 @app.route("/booth")
 def booth():
-    return render_template("booth.html")
+    # Home page already handles the coin + curtain animation.
+    return redirect(url_for("template_select"))
 
 
 @app.route("/template_select")
@@ -35,138 +36,60 @@ def template_select():
     return render_template("template_select.html")
 
 
-@app.route("/filters", methods=["POST"])
+@app.route("/filters", methods=["GET", "POST"])
 def filters():
-    template_id = request.form.get("template_id")
+    if request.method == "POST":
+        template_id = request.form.get("template_id")
+    else:
+        template_id = request.args.get("template_id") or session.get("template_id")
+
+    if not template_id:
+        return redirect(url_for("template_select"))
+
     session["template_id"] = template_id
     return render_template("filters.html", template_id=template_id)
 
 
-@app.route("/capture", methods=["POST"])
+@app.route("/capture", methods=["GET", "POST"])
 def capture():
-    filter_type = request.form.get("filter")
-    session["filter_type"] = filter_type
-    return render_template("capture.html",
-                           template_id=session.get("template_id"),
-                           filter_type=filter_type)
+    template_id = session.get("template_id") or request.form.get("template_id")
+    if not template_id:
+        return redirect(url_for("template_select"))
+
+    if request.method == "POST":
+        filter_type = request.form.get("filter") or "none"
+        session["filter_type"] = filter_type
+    else:
+        filter_type = session.get("filter_type") or "none"
+
+    return render_template("capture.html", template_id=template_id, filter_type=filter_type)
 
 @app.route("/email", methods=["GET", "POST"])
 def email_page():
-    from flask_mail import Message
-    import base64
-
-    # GET: show first page expecting the base64 to be posted
+    # IMPORTANT: Flask's default session is cookie-based. Do NOT store base64 images in session.
     if request.method == "GET":
-        return render_template("email.html", mode="capture")
+        return render_template("email.html")
 
-    # POST: could be first POST (with photostrip_data) or second POST (with email)
-    photostrip_data = request.form.get("photostrip_data")
     user_email = request.form.get("email")
+    photostrip_data = request.form.get("photostrip_data")
 
-    # --- FIRST POST: store photostrip and show email input ---
-    if photostrip_data and not user_email:
-        if "," not in photostrip_data:
-            return "Error: Invalid photostrip data", 400
+    if not user_email:
+        return "Error: Missing email", 400
 
-        session["photostrip_data"] = photostrip_data
-        return render_template("email.html", mode="enter_email")
-
-    # --- SECOND POST: has email but no new photostrip data ---
-    if user_email:
-        photostrip_data = session.get("photostrip_data")
-        if not photostrip_data:
-            return "Error: No photostrip data", 400
-
-        header, encoded = photostrip_data.split(",", 1)
-        binary = base64.b64decode(encoded)
-
-        msg = Message(
-            "Your Photostrip",
-            recipients=[user_email],
-            body="Thanks for using our photobooth!"
-        )
-        msg.attach("photostrip.png", "image/png", binary)
-        mail.send(msg)
-
-        return redirect(url_for("thank_page"))
-
-    return "Error: Unexpected request", 400
-
-# @app.route("/email", methods=["POST"])
-# def email_page():
-#     # receives final photostrip as base64
-#     # photostrip_data = request.form.get("photostrip_data")
-#     # session["photostrip_data"] = photostrip_data
-#     session["photostrip_data"] = localStorage.getItem("last_photostrip")
-#     return render_template("email.html")
-
-# @app.route("/email", methods=["GET", "POST"])
-# def email_page():
-#     if request.method == "POST":
-#         photostrip_data = request.form.get("photostrip_data")
-#         session["photostrip_data"] = photostrip_data
-#         return redirect(url_for("enter_email"))  # next step where user types email
-
-#     return render_template("email.html")  # initial GET
-
-# @app.route("/email", methods=["GET", "POST"])
-# def email_page():
-#     if request.method == "POST":
-#         # Receive BASE64 data from hidden input
-#         photostrip_data = request.form.get("photostrip_data", "")
-
-#         if "," not in photostrip_data:
-#             print("Invalid photostrip_data:", photostrip_data)
-#             return "Error: Invalid photostrip data", 400
-
-#         header, encoded = photostrip_data.split(",", 1)
-
-#         session["photostrip_data"] = photostrip_data
-#         return redirect(url_for("enter_email"))
-
-#     return render_template("thanks.html")
-
-# @app.route("/enter_email", methods=["GET", "POST"])
-# def enter_email():
-#     return render_template("enter_email.html")
-
-
-
-# @app.route("/send", methods=["POST"])
-# def send_email():
-#     email = request.form.get("email")
-#     data_url = session.get("photostrip_data")
-
-#     if not data_url:
-#         return "Error: no photostrip data", 400
-
-#     # Extract base64 w/o header
-#     # img_bytes = base64.b64decode(data_url.split(",")[1])
-
-#     msg = Message("Your Photostrip!", recipients=[email])
-#     msg.body = "Thanks for using our PhotoBooth!"
-#     # msg.attach("photostrip.png", "image/png", img_bytes)
-#     with app.open_resource("generated_strip.png") as fp:
-#         msg.attach("photostrip.png", "image/png", fp.read())
-
-#     mail.send(msg)
-
-#     return redirect(url_for("thanks"))
-
-@app.route("/send_email", methods=["POST"])
-def send_email_route():
-    email = request.form.get("email")
-    photostrip_data = session.get("photostrip_data")
-
-    # decode + attach below ...
-    import base64
-    from flask_mail import Message
+    if not photostrip_data or "," not in photostrip_data:
+        return "Error: Missing/invalid photostrip data", 400
 
     header, encoded = photostrip_data.split(",", 1)
-    binary = base64.b64decode(encoded)
+    try:
+        binary = base64.b64decode(encoded)
+    except Exception:
+        return "Error: Could not decode image", 400
 
-    msg = Message("Your Photostrip", recipients=[email])
-    msg.body = "Thanks for using our photobooth!"
+    msg = Message(
+        "Your Photostrip",
+        recipients=[user_email],
+        body="Thanks for using our photobooth!"
+    )
     msg.attach("photostrip.png", "image/png", binary)
     mail.send(msg)
 

@@ -1,45 +1,61 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container text-center py-4">
-    <h2>Choose Your Photostrip Template</h2>
-    <p>Hover to preview. Click to select.</p>
-
-    <form method="POST" action="/filters">
-        <div class="row justify-content-center mt-4">
-            {% for i in range(1,5) %}
-            <div class="col-6 col-md-3 mb-3">
-                <label class="template-option">
-                    <input type="radio" name="template_id" value="{{ i }}" required>
-                    <img src="/static/photostrip_templates/template{{ i }}.png"
-                         class="img-fluid template-thumb">
-                </label>
-            </div>
-            {% endfor %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="mb-1">Pick a Photostrip</h2>
+            <div class="text-muted">Hover to zoom. Click to select.</div>
         </div>
+        <a class="btn btn-outline-light" href="/">Exit Booth</a>
+    </div>
 
-        <button class="btn btn-primary btn-lg mt-3">Next</button>
-    </form>
-    <div class="template-wrap">
-        <img src="..." class="template-thumb">
-        <div class="select-overlay">
-            <img src="/static/img/arrow.svg">
-            <span>Select</span>
+    <div class="alert alert-secondary">
+        <div class="fw-semibold mb-1">Tip</div>
+        <div class="small">
+            Tap <b>Enable camera preview</b> to see yourself inside each template before you choose.
+            On iPhone/iPad, camera access requires <code>https://</code> (or <code>localhost</code>).
         </div>
     </div>
-    
+
+    <div class="d-flex gap-2 align-items-center mb-4">
+        <button id="startPreviewBtn" class="btn btn-primary btn-lg">Enable camera preview</button>
+        <span id="cameraStatus" class="text-muted small"></span>
+    </div>
+
+    <video id="webcam" autoplay playsinline muted class="visually-hidden"></video>
+
+    <form id="templateForm" method="POST" action="/filters">
+        <input type="hidden" name="template_id" id="template_id" required>
+    </form>
+
+    <div class="row g-3">
+        {% for i in range(1,5) %}
+        <div class="col-12 col-md-6 col-lg-3">
+            <button type="button" class="template-card w-100" onclick="selectTemplate({{ i }})" aria-label="Select template {{ i }}">
+                <div class="template-canvas-wrap">
+                    <canvas class="template-canvas" data-template-id="{{ i }}"></canvas>
+                    <div class="select-overlay">
+                        <img src="/static/img/arrow.svg" alt="arrow">
+                        <span>Select</span>
+                    </div>
+                </div>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 
-<style>
-.template-option input { display:none; }
-.template-thumb {
-    border:2px solid transparent;
-    transition: all .2s;
+<script>
+function selectTemplate(id) {
+  const input = document.getElementById('template_id');
+  input.value = String(id);
+  document.getElementById('templateForm').submit();
 }
-.template-option:hover .template-thumb {
-    transform: scale(1.05);
-    border-color: yellow;
-}
-</style>
+</script>
+
+<script src="/static/js/webcam.js"></script>
+<script src="/static/js/photostrip.js"></script>
+<script src="/static/js/template_select.js"></script>
 
 {% endblock %}

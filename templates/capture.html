@@ -4,7 +4,15 @@
 <div class="container text-center py-5">
     <h2>Get Ready!</h2>
 
-    <video id="webcam" autoplay playsinline class="d-none"></video>
+    <p class="text-muted mb-4">
+        Tap start to enable the camera. We’ll take 3 photos (every 3 seconds) and build your photostrip.
+    </p>
+
+    <button id="startCaptureBtn" class="btn btn-primary btn-lg mb-4">
+        Start Camera & Begin
+    </button>
+
+    <video id="webcam" autoplay playsinline muted class="visually-hidden"></video>
 
     <div id="countdown" class="display-1 fw-bold my-4"></div>
     <div id="flash"></div>
@@ -14,24 +22,19 @@
     <canvas id="previewCanvas" class="border rounded" width="400" height="800"></canvas>
     
 
-    <form id="email_form" action="/email" method="POST">
-        <input type="hidden" name="photostrip_data" id="photostrip_data">
-        <button type="submit" id="sendBtn" class="btn btn-success btn-lg mt-4 d-none">
-            Continue
-        </button>
-    </form>
+    <input type="hidden" id="photostrip_data">
+
+    <a id="sendBtn" href="/email" class="btn btn-success btn-lg mt-4 d-none">
+        Continue
+    </a>
     <button class="btn btn-outline-light" onclick="retry()">
         Retry
     </button>
 </div>
 
 <script>
-document.getElementById("email_form").submit();
-
 const TEMPLATE_ID = "{{ template_id }}";
 const FILTER = "{{ filter_type }}";
-document.getElementById('flash').classList.add('flash-show');
-setTimeout(()=> document.getElementById('flash').classList.remove('flash-show'), 120);
 function retry() {
    window.location.href="/template_select";
 }
@@ -39,6 +42,7 @@ function retry() {
 </script>
 
 <script src="/static/js/webcam.js"></script>
+<script src="/static/js/photostrip.js"></script>
 <script src="/static/js/filters.js"></script>
 <script src="/static/js/capture.js"></script>
 

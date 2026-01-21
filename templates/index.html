@@ -1,36 +1,77 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container text-center mt-5">
-    <h1 class="mb-4">Welcome to the Photobooth!</h1>
+<div class="container py-5">
+    <div class="row align-items-center g-4">
+        <div class="col-12 col-lg-6 text-center text-lg-start">
+            <h1 class="mb-3">GTSA Photobooth</h1>
+            <p class="lead text-muted mb-4">
+                Step in, pick a photostrip, choose a filter, and we’ll snap 3 photos automatically.
+            </p>
 
-    <div id="booth-preview" class="mx-auto mb-4" style="max-width:400px;">
-        <img src="/static/img/booth_front.svg" class="img-fluid" alt="booth">
-        <div class="coin-slot-overlay">$0 per photo</div>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                <span class="badge rounded-pill text-bg-secondary">3 shots</span>
+                <span class="badge rounded-pill text-bg-secondary">3 seconds apart</span>
+                <span class="badge rounded-pill text-bg-secondary">$0 per photo</span>
+                <span class="badge rounded-pill text-bg-secondary">Email delivery</span>
+            </div>
+
+            <button id="enterBtn" class="btn btn-primary btn-lg" onclick="enterBooth()">
+                Enter Photobooth
+            </button>
+
+            <div class="small text-muted mt-3">
+                Camera permission is requested on the next screen.
+                On iPhone/iPad, camera access requires <code>https://</code> (or <code>localhost</code>).
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-6">
+            <div id="boothStage" class="booth-stage mx-auto">
+                <img src="/static/img/booth_front.svg" class="img-fluid" alt="Photobooth front">
+
+                <img id="coin" src="/static/img/coin.svg" class="booth-coin" alt="coin">
+
+                <div class="booth-curtains" aria-hidden="true">
+                    <img class="booth-curtain booth-curtain-left" src="/static/img/curtain_left.svg" alt="">
+                    <img class="booth-curtain booth-curtain-right" src="/static/img/curtain_right.svg" alt="">
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <div class="fw-semibold mb-2">Pick from 4 photostrip styles</div>
+                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                    {% for i in range(1,5) %}
+                        <img src="/static/photostrip_templates/template{{ i }}.png" class="home-thumb" alt="Template {{ i }}">
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
-
-    <h5>Select a style:</h5>
-    <div class="d-flex justify-content-center gap-3 my-3">
-        <img src="/static/photostrip_templates/template1.png" class="thumb">
-        <img src="/static/photostrip_templates/template2.png" class="thumb">
-        <img src="/static/photostrip_templates/template3.png" class="thumb">
-        <img src="/static/photostrip_templates/template4.png" class="thumb">
-        <img src="/static/photostrip_templates/template5.png" class="thumb">
-        <img src="/static/photostrip_templates/template6.png" class="thumb">
-    </div>
-    <img id="coin" src="/static/img/coin.svg" class="coin d-none">
-
-    <button class="btn btn-primary btn-lg" onclick="enterBooth()">Enter Photobooth</button>
 </div>
 
 <script>
 function enterBooth() {
-  const coin = document.getElementById('coin');
-  coin.classList.remove('d-none');
-  setTimeout(()=> coin.classList.add('coin-drop'), 10);
-  setTimeout(()=> window.location.href="/booth", 900);
-}
+  const btn = document.getElementById('enterBtn');
+  btn.disabled = true;
+  btn.innerText = 'Inserting coin...';
 
+  const stage = document.getElementById('boothStage');
+  const coin = document.getElementById('coin');
+
+  coin.classList.add('booth-coin-drop');
+
+  // Open curtains shortly after coin drop starts
+  setTimeout(() => {
+    btn.innerText = 'Opening curtains...';
+    stage.classList.add('booth-open');
+  }, 650);
+
+  // Transition into the booth experience
+  setTimeout(() => {
+    window.location.href = "/template_select";
+  }, 1600);
+}
 </script>
 
 {% endblock %}

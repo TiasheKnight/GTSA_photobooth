@@ -22,9 +22,88 @@
   opacity:1;
   transform: translateY(200px);
 }
+
+/* Home booth animation */
+.booth-stage {
+  position: relative;
+  max-width: 420px;
+}
+
+.booth-coin {
+  position: absolute;
+  width: 54px;
+  left: 79%;
+  top: 15%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.booth-coin-drop {
+  opacity: 1;
+  animation: boothCoinDrop .85s cubic-bezier(.3,1,.3,1) forwards;
+}
+
+@keyframes boothCoinDrop {
+  0% { transform: translate(-50%, -160%) scale(1); }
+  60% { transform: translate(-50%, -35%) scale(1); }
+  100% { transform: translate(-50%, 10%) scale(.92); }
+}
+
+.booth-curtains {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.booth-curtain {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: transform 1.2s ease-in-out;
+}
+
+.booth-curtain-left { left: 0; transform: translateX(0); }
+.booth-curtain-right { right: 0; transform: translateX(0); }
+
+.booth-open .booth-curtain-left { transform: translateX(-105%); }
+.booth-open .booth-curtain-right { transform: translateX(105%); }
+
+.home-thumb {
+  width: 74px;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.06);
+}
 .template-wrap {
   position:relative;
   cursor:pointer;
+}
+
+.template-card {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  color: inherit;
+}
+
+.template-canvas-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 2px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.04);
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+.template-canvas {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 .select-overlay {
   position:absolute;
@@ -35,12 +114,27 @@
   transition:opacity .2s, transform .2s;
   text-align:center;
 }
-.template-wrap:hover .select-overlay {
+.template-wrap:hover .select-overlay,
+.template-card:hover .select-overlay,
+.template-card:focus-visible .select-overlay {
   opacity:1;
   transform:translate(-50%,-50%);
 }
 .select-overlay img { width:30px; }
 .select-overlay span { display:block; font-weight:bold; color:yellow; }
+
+.template-card:hover .template-canvas-wrap,
+.template-card:focus-visible .template-canvas-wrap {
+  transform: scale(1.04);
+  border-color: rgba(255, 215, 0, .85);
+  box-shadow: 0 12px 28px rgba(0,0,0,.45);
+}
+
+.template-card:focus-visible {
+  outline: 3px solid rgba(255, 215, 0, .75);
+  outline-offset: 4px;
+  border-radius: 16px;
+}
 
 #flash {
     position:fixed;
@@ -67,8 +161,8 @@
   @keyframes fadeOut { 0%{opacity:1;} 100%{opacity:0;} }
   
   button, label, input[type=radio] {
-    font-size:1.4rem;
-    padding:.8rem 1.4rem;
+    font-size:1.1rem;
+    padding:.7rem 1.1rem;
     min-width:150px;
   }
     

@@ -1,34 +1,82 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container py-4 text-center">
-    <h2>Choose a Filter</h2>
-    <p>Preview on the left, photostrip on the right.</p>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="mb-1">Pick a Filter</h2>
+            <div class="text-muted">Your photostrip will be captured automatically: 3 shots, 3 seconds apart.</div>
+        </div>
+        <a class="btn btn-outline-light" href="/template_select">Change Template</a>
+    </div>
+
+    <div class="alert alert-secondary">
+        <div class="fw-semibold mb-1">Tip</div>
+        <div class="small">Tap <b>Enable camera</b> first. If the preview is black on iPhone/iPad, you’re likely not on <code>https://</code>.</div>
+    </div>
+
+    <div class="d-flex gap-2 align-items-center mb-3">
+        <button id="startCameraBtn" type="button" class="btn btn-primary btn-lg">Enable camera</button>
+        <span id="cameraStatus" class="text-muted small"></span>
+    </div>
 
     <form method="POST" action="/capture">
         <input type="hidden" name="template_id" value="{{ template_id }}">
 
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <video id="webcam" autoplay playsinline class="w-100 rounded"></video>
+        <div class="row g-3 align-items-start">
+            <div class="col-12 col-lg-6">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-header border-secondary">Live preview</div>
+                    <div class="card-body">
+                        <video id="webcamPreview" autoplay playsinline muted class="w-100 rounded"></video>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6">
-                <img src="/static/photostrip_templates/template{{ template_id }}.png"
-                     class="w-50" alt="template preview">
+            <div class="col-12 col-lg-6">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-header border-secondary">Photostrip preview</div>
+                    <div class="card-body">
+                        <canvas id="stripPreview" class="w-100 rounded border" style="max-width: 420px;"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <h5 class="mt-4">Filters:</h5>
-        <div class="d-flex justify-content-center gap-3 my-3">
-            <label><input type="radio" name="filter" value="none" checked> None</label>
-            <label><input type="radio" name="filter" value="bw"> B&W</label>
-            <label><input type="radio" name="filter" value="sepia"> Sepia</label>
-            <label><input type="radio" name="filter" value="contrast"> Contrast+</label>
+        <div class="mt-4">
+            <div class="fw-semibold mb-2">Filters</div>
+            <div class="d-flex flex-wrap gap-2">
+                <label class="btn btn-outline-light">
+                    <input class="visually-hidden" type="radio" name="filter" value="none" checked>
+                    None
+                </label>
+                <label class="btn btn-outline-light">
+                    <input class="visually-hidden" type="radio" name="filter" value="bw">
+                    B&W
+                </label>
+                <label class="btn btn-outline-light">
+                    <input class="visually-hidden" type="radio" name="filter" value="sepia">
+                    Sepia
+                </label>
+                <label class="btn btn-outline-light">
+                    <input class="visually-hidden" type="radio" name="filter" value="contrast">
+                    Contrast+
+                </label>
+            </div>
         </div>
 
-        <button class="btn btn-primary btn-lg">Start Capture</button>
+        <div class="mt-4 d-flex gap-2">
+            <button class="btn btn-success btn-lg">Start Capture</button>
+            <a class="btn btn-outline-light btn-lg" href="/template_select">Back</a>
+        </div>
     </form>
 </div>
 
+<script>
+  const TEMPLATE_ID = "{{ template_id }}";
+</script>
+
 <script src="/static/js/webcam.js"></script>
+<script src="/static/js/photostrip.js"></script>
+<script src="/static/js/filters.js"></script>
+<script src="/static/js/filters_page.js"></script>
 {% endblock %}
