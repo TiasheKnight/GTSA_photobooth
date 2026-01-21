@@ -1,0 +1,13 @@
+<svg width="120" height="50" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+      refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#fff"/>
+    </marker>
+  </defs>
+
+  <line x1="10" y1="25" x2="80" y2="25" stroke="#fff" stroke-width="4"
+        marker-end="url(#arrowhead)"/>
+
+  <text x="85" y="30" fill="#fff" font-size="18" font-weight="bold">Select</text>
+</svg>

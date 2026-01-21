@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container text-center mt-5">
+    <h1 class="mb-4">Welcome to the Photobooth!</h1>
+
+    <div id="booth-preview" class="mx-auto mb-4" style="max-width:400px;">
+        <img src="/static/img/booth_front.svg" class="img-fluid" alt="booth">
+        <div class="coin-slot-overlay">$0 per photo</div>
+    </div>
+
+    <h5>Select a style:</h5>
+    <div class="d-flex justify-content-center gap-3 my-3">
+        <img src="/static/photostrip_templates/template1.png" class="thumb">
+        <img src="/static/photostrip_templates/template2.png" class="thumb">
+        <img src="/static/photostrip_templates/template3.png" class="thumb">
+        <img src="/static/photostrip_templates/template4.png" class="thumb">
+        <img src="/static/photostrip_templates/template5.png" class="thumb">
+        <img src="/static/photostrip_templates/template6.png" class="thumb">
+    </div>
+    <img id="coin" src="/static/img/coin.svg" class="coin d-none">
+
+    <button class="btn btn-primary btn-lg" onclick="enterBooth()">Enter Photobooth</button>
+</div>
+
+<script>
+function enterBooth() {
+  const coin = document.getElementById('coin');
+  coin.classList.remove('d-none');
+  setTimeout(()=> coin.classList.add('coin-drop'), 10);
+  setTimeout(()=> window.location.href="/booth", 900);
+}
+
+</script>
+
+{% endblock %}

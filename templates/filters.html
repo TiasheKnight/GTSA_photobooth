@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container py-4 text-center">
+    <h2>Choose a Filter</h2>
+    <p>Preview on the left, photostrip on the right.</p>
+
+    <form method="POST" action="/capture">
+        <input type="hidden" name="template_id" value="{{ template_id }}">
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <video id="webcam" autoplay playsinline class="w-100 rounded"></video>
+            </div>
+            <div class="col-md-6">
+                <img src="/static/photostrip_templates/template{{ template_id }}.png"
+                     class="w-50" alt="template preview">
+            </div>
+        </div>
+
+        <h5 class="mt-4">Filters:</h5>
+        <div class="d-flex justify-content-center gap-3 my-3">
+            <label><input type="radio" name="filter" value="none" checked> None</label>
+            <label><input type="radio" name="filter" value="bw"> B&W</label>
+            <label><input type="radio" name="filter" value="sepia"> Sepia</label>
+            <label><input type="radio" name="filter" value="contrast"> Contrast+</label>
+        </div>
+
+        <button class="btn btn-primary btn-lg">Start Capture</button>
+    </form>
+</div>
+
+<script src="/static/js/webcam.js"></script>
+{% endblock %}

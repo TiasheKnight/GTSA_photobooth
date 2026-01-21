@@ -1,0 +1,129 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Send Your Photos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+
+<div class="container d-flex flex-column justify-content-center align-items-center" style="height:100vh;">
+    <h2 class="mb-3">Enter Your Email</h2>
+    <p class="text-muted mb-4">Your photostrip will be emailed to you shortly.</p>
+    <form id="photostripForm" method="POST" action="/email">
+        <input type="hidden" name="photostrip_data" id="photostrip_data">
+        <button type="submit" class="btn btn-primary">Continue</button>
+    </form>    
+    <a href="/" class="btn btn-link mt-3 text-light">Cancel and Return Home</a>
+
+
+    <a href="/" class="btn btn-link mt-4 text-light">Cancel and Return Home</a>
+</div>
+
+</body>
+</html>
+
+
+<a id="dl" class="btn btn-secondary">Download</a>
+
+<script>
+const data = sessionStorage.getItem('last_photostrip');
+if (data) {
+    document.getElementById("photostrip_data").value = data;                                                
+    document.getElementById('dl').href = data;
+    document.getElementById('dl').download = 'photostrip.png';
+}
+</script> -->
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Send Your Photos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+
+<div class="container d-flex flex-column justify-content-center align-items-center" style="height:100vh;">
+    <h2 class="mb-3">Continue</h2>
+    <p class="text-muted mb-4">Click continue to proceed to email entry.</p>
+
+    <form id="dataForm" method="POST" action="/email" class="w-50">
+        <input type="hidden" name="photostrip_data" id="photostrip_data">
+        <button type="submit" class="btn btn-primary btn-lg w-100">Continue</button>
+    </form>
+
+    <a href="/" class="btn btn-link mt-4 text-light">Cancel & Return Home</a>
+
+    <a id="dl" class="btn btn-secondary mt-3">Download</a>
+</div>
+
+<script>
+const data = sessionStorage.getItem('last_photostrip');
+
+if (data) {
+    document.getElementById("photostrip_data").value = data;
+    document.getElementById('dl').href = data;
+    document.getElementById('dl').download = 'photostrip.png';
+} else {
+    console.warn("No last_photostrip found in sessionStorage");
+}
+</script>
+
+</body>
+</html>
+ -->
+ <!DOCTYPE html>
+ <html>
+ <head>
+     <meta charset="UTF-8">
+     <title>Send Your Photostrip</title>
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+ </head>
+ <body class="bg-dark text-light">
+ 
+ <div class="container d-flex flex-column justify-content-center align-items-center" style="height:100vh;">
+ 
+     {% if mode == "capture" %}
+     <h2 class="mb-3">Continue</h2>
+     <p class="text-muted mb-4">Click continue to enter your email.</p>
+ 
+     <form method="POST" action="/email">
+         <input type="hidden" name="photostrip_data" id="photostrip_data">
+         <button type="submit" class="btn btn-primary btn-lg w-100">Continue</button>
+     </form>
+ 
+     {% elif mode == "enter_email" %}
+     <h2 class="mb-3">Enter Your Email</h2>
+     <p class="text-muted mb-4">We will send your photostrip shortly.</p>
+ 
+     <form action="/email" method="POST"  class="w-50">
+         <input type="email" name="email" class="form-control form-control-lg mb-3" placeholder="you@example.com" required>
+         <!-- <input type="hidden" id="photostrip_data" name="photostrip_data"> -->
+
+         <button type="submit" class="btn btn-success btn-lg w-100">Send</button>
+     </form>
+     {% endif %}
+ 
+     <a href="/" class="btn btn-link mt-4 text-light">Cancel & Return Home</a>
+ 
+     <a id="dl" class="btn btn-secondary mt-3">Download</a>
+ </div>
+ 
+ <script>
+ const data = sessionStorage.getItem('last_photostrip');
+ if (data) {
+     const input = document.getElementById("photostrip_data");
+     if (input) input.value = data;
+ 
+     const dl = document.getElementById("dl");
+     if (dl) {
+         dl.href = data;
+         dl.download = "photostrip.png";
+     }
+ }
+ </script>
+ 
+ </body>
+ </html>
+ 

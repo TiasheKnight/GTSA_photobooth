@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container text-center mt-5">
+    <h2>Inside the Booth</h2>
+    <p>Insert your imaginary $0 coin to continue!</p>
+
+    <button class="btn btn-success btn-lg" onclick="startBooth()">
+        Start
+    </button>
+</div>
+
+<div id="curtains">
+    <img class="curtain curtain-left" src="/static/img/curtain_left.svg">
+    <img class="curtain curtain-right" src="/static/img/curtain_right.svg">
+</div>
+
+  
+<script>
+async function startBooth() {
+    let el = document.documentElement;
+    if (el.requestFullscreen) el.requestFullscreen();
+    window.location.href = "/template_select";
+}
+
+function openCurtains() {
+    document.body.classList.add("curtain-open");
+    setTimeout(() => window.location.href="/template_select", 1300);
+}
+
+
+</script>
+
+{% endblock %}

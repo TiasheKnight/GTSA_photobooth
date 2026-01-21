@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container text-center py-4">
+    <h2>Choose Your Photostrip Template</h2>
+    <p>Hover to preview. Click to select.</p>
+
+    <form method="POST" action="/filters">
+        <div class="row justify-content-center mt-4">
+            {% for i in range(1,5) %}
+            <div class="col-6 col-md-3 mb-3">
+                <label class="template-option">
+                    <input type="radio" name="template_id" value="{{ i }}" required>
+                    <img src="/static/photostrip_templates/template{{ i }}.png"
+                         class="img-fluid template-thumb">
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button class="btn btn-primary btn-lg mt-3">Next</button>
+    </form>
+    <div class="template-wrap">
+        <img src="..." class="template-thumb">
+        <div class="select-overlay">
+            <img src="/static/img/arrow.svg">
+            <span>Select</span>
+        </div>
+    </div>
+    
+</div>
+
+<style>
+.template-option input { display:none; }
+.template-thumb {
+    border:2px solid transparent;
+    transition: all .2s;
+}
+.template-option:hover .template-thumb {
+    transform: scale(1.05);
+    border-color: yellow;
+}
+</style>
+
+{% endblock %}
