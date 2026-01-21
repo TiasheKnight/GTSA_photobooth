@@ -6,7 +6,7 @@
         <div class="col-12">
             <h2 class="text-center">Get Ready!</h2>
             <p class="text-center text-white mb-4">
-                We'"'"'ll take 3 photos (every 3 seconds) and build your photostrip.
+                We'll take 3 photos (every 3 seconds) and build your photostrip.
             </p>
         </div>
     </div>
@@ -14,7 +14,7 @@
     <div class="row g-4 align-items-center">
         <div class="col-12 col-lg-6">
             <div class="card bg-dark border-secondary">
-                <div class="card-header border-secondary">Camera Feed</div>
+                <div class="card-header border-secondary text-white">Camera Feed</div>
                 <div class="card-body text-center">
                     <video id="webcam" autoplay playsinline muted class="w-100 rounded" style="max-height: 600px; object-fit: cover; transform: scaleX(-1); display: block;"></video>
                     <div id="countdown" class="display-3 fw-bold my-3" style="height: 80px; display: flex; align-items: center; justify-content: center; color: #fff;"></div>
@@ -25,7 +25,7 @@
 
         <div class="col-12 col-lg-6">
             <div class="card bg-dark border-secondary">
-                <div class="card-header border-secondary">Photostrip Preview</div>
+                <div class="card-header border-secondary text-white">Photostrip Preview</div>
                 <div class="card-body text-center">
                     <canvas id="previewCanvas" width="400" height="800" class="border rounded" style="width: 25%; height: auto; max-height: 600px; display: block; margin: 0 auto; background: #333;"></canvas>
                 </div>
@@ -48,7 +48,7 @@
             <a id="sendBtn" href="/email" class="btn btn-success btn-lg mt-4 d-none">
                 Continue
             </a>
-            <button class="btn btn-outline-light" onclick="retry()">
+            <button class="btn btn-outline-light btn-lg mt-4" onclick="retry()">
                 Retry
             </button>
         </div>

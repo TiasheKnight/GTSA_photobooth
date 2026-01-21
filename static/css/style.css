@@ -18,6 +18,16 @@
   display: block;
 }
 
+.booth-stage {
+  transform: scale(2);
+  transform-origin: top center; /* keeps it aligned nicely */
+}
+
+.booth-stage {
+  overflow: visible;
+}
+
+
 /* Curtain overlay for page transitions */
 .page-curtain {
   position: fixed;
@@ -33,14 +43,14 @@
 
 .page-curtain-left {
   left: 0;
-  width: 50%;
+  width: 100%;
   transform: translateX(0);
   background-position: right;
 }
 
 .page-curtain-right {
   right: 0;
-  width: 50%;
+  width: 100%;
   transform: translateX(0);
   background-image: url('/static/img/curtain_right.svg');
   background-position: left;
@@ -202,4 +212,10 @@
     padding:.7rem 1.1rem;
     min-width:150px;
   }
+
+  a.dropdown-toggle {
+   border: none;
+   outline: none;
+   text-decoration: none;
+}
     
