@@ -16,7 +16,7 @@
   }
 
   async function loadAllTemplates() {
-    const ids = [1, 2, 3, 4];
+    const ids = [1, 2, 3, 4, 5, 6];
     await Promise.all(
       ids.map(async (id) => {
         const t = await Photostrip.loadTemplate(id);
@@ -41,20 +41,25 @@
       const ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Background behind the overlay holes
+      // Draw white background
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw webcam into each frame
+      // Draw webcam into each frame (flipped)
       ctx.save();
       ctx.filter = "none";
       for (const r of t.frames) {
-        Photostrip.drawSourceCover(ctx, video, r.x, r.y, r.w, r.h);
+        // Flip the context for this frame
+        ctx.save();
+        ctx.translate(r.x + r.w, r.y);
+        ctx.scale(-1, 1);
+        Photostrip.drawSourceCover(ctx, video, 0, 0, r.w, r.h);
+        ctx.restore();
       }
       ctx.restore();
 
-      // Draw overlay last (borders + stickers/logos)
-      ctx.drawImage(t.overlay, 0, 0);
+      // Draw template on top (with logo and borders visible)
+      ctx.drawImage(t.img, 0, 0);
     }
 
     rafId = requestAnimationFrame(drawLoop);
@@ -88,6 +93,9 @@
     console.error(e);
     setStatus("Could not load templates.");
   });
+
+  // Auto-start preview
+  startPreview();
 
   if (startBtn) startBtn.addEventListener("click", startPreview);
 

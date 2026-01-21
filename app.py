@@ -15,8 +15,21 @@ def send_test_email():
     msg = Message(
         subject="Photobooth Test Email",
         recipients=["ivanwu010@gmail.com"],
-        body="Hello! This is a test email from your Photobooth app."
+        # body="Happy New Year🧧✨ \n\nThank you for celebrating with us and capturing this moment. \n\nDon’t forget to tag us on Instagram (https://www.instagram.com/groningen.tsa?igsh=amJ4ZXFra2hmZTRy) if you post your photo 📸 \n\nWarm wishes, \n\neveryone at GTSA + Charlie Bear"
     )
+    msg.html = """
+    <h1>Happy New Year 🧧✨</h1>
+    <p>Thank you for celebrating with us and capturing this moment.</p>
+
+    <p>
+        Don’t forget to tag us on 
+        <a href="https://www.instagram.com/groningen.tsa?igsh=amJ4ZXFra2hmZTRy">Instagram</a> 
+        if you post your photo 📸
+    </p>
+
+    <p>Warm wishes,</p>
+    <p>everyone at GTSA + Charlie Bear</p>
+    """
     mail.send(msg)
     return "Email sent!"
 
@@ -86,10 +99,23 @@ def email_page():
         return "Error: Could not decode image", 400
 
     msg = Message(
-        "Your Photostrip",
+        "Happy CNY! Your GTSA Photostrip is Here! 📸",
         recipients=[user_email],
-        body="Thanks for using our photobooth!"
+        # body="Happy New Year🧧✨ \n Thank you for celebrating with us and capturing this moment. \n Don’t forget to tag us on Instagram (https://www.instagram.com/groningen.tsa?igsh=amJ4ZXFra2hmZTRy)if you post your photo 📸 \n Warm wishes, \n everyone at GTSA + Charlie Bear"
     )
+    msg.html = """
+    <h1>Happy New Year 🧧✨</h1>
+    <p>Thank you for celebrating with us and capturing this moment.</p>
+
+    <p>
+        Don’t forget to tag us on 
+        <a href="https://www.instagram.com/groningen.tsa?igsh=amJ4ZXFra2hmZTRy">Instagram</a> 
+        if you post your photo 📸
+    </p>
+
+    <p>Warm wishes,</p>
+    <p>everyone at GTSA + Charlie Bear</p>
+    """
     msg.attach("photostrip.png", "image/png", binary)
     mail.send(msg)
 

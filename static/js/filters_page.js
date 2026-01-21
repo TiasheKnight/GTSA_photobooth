@@ -16,36 +16,55 @@
   function readFilter() {
     const checked = radios.find((r) => r.checked);
     currentFilter = checked?.value || "none";
+    // Filter is now updated, loop will use the new filter on next frame
+    console.log("Filter changed to:", currentFilter);
   }
 
   function drawTemplateOnly() {
     if (!template || !canvas) return;
-    canvas.width = template.img.naturalWidth;
-    canvas.height = template.img.naturalHeight;
+    const w = template.img.naturalWidth;
+    const h = template.img.naturalHeight;
+    
+    console.log("Drawing template, dimensions:", w, h, "image ready:", template.img.complete);
+    
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+    
     const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, w, h);
     ctx.drawImage(template.img, 0, 0);
+    console.log("Template drawn to canvas");
   }
 
   function loop() {
-    if (!template || !canvas) return;
+    if (!template || !canvas || !video) return;
     const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const w = template.img.naturalWidth;
+    const h = template.img.naturalHeight;
+    
+    ctx.clearRect(0, 0, w, h);
 
-    // Background behind frame holes
+    // Draw white background
     ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, w, h);
 
-    // Draw webcam into frames with selected filter
+    // Draw webcam into frames with selected filter (flipped)
     ctx.save();
     ctx.filter = getCanvasFilter(currentFilter);
     for (const r of template.frames) {
-      Photostrip.drawSourceCover(ctx, video, r.x, r.y, r.w, r.h);
+      // Flip the context for this frame
+      ctx.save();
+      ctx.translate(r.x + r.w, r.y);
+      ctx.scale(-1, 1);
+      Photostrip.drawSourceCover(ctx, video, 0, 0, r.w, r.h);
+      ctx.restore();
     }
     ctx.restore();
 
-    // Overlay on top
-    ctx.drawImage(template.overlay, 0, 0);
+    // Draw template on top (with logo and borders visible)
+    ctx.drawImage(template.img, 0, 0);
 
     rafId = requestAnimationFrame(loop);
   }
@@ -79,6 +98,8 @@
 
     try {
       template = await Photostrip.loadTemplate(TEMPLATE_ID);
+      console.log("Template loaded in filters_page:", template);
+      console.log("Frames detected:", template.frames.length, template.frames);
       drawTemplateOnly();
       setStatus("Template ready.");
     } catch (e) {
@@ -87,6 +108,9 @@
     }
 
     if (startBtn) startBtn.addEventListener("click", startCamera);
+    
+    // Auto-start camera
+    await startCamera();
   }
 
   init();

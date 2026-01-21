@@ -17,7 +17,7 @@
             On iPhone/iPad, camera access requires <code>https://</code> (or <code>localhost</code>).
         </div>
     </div>
-
+    
     <div class="d-flex gap-2 align-items-center mb-4">
         <button id="startPreviewBtn" class="btn btn-primary btn-lg">Enable camera preview</button>
         <span id="cameraStatus" class="text-muted small"></span>
@@ -30,11 +30,11 @@
     </form>
 
     <div class="row g-3">
-        {% for i in range(1,5) %}
-        <div class="col-12 col-md-6 col-lg-3">
+        {% for i in range(1,7) %}
+        <div class="col-12 col-md-4 col-lg-2">
             <button type="button" class="template-card w-100" onclick="selectTemplate({{ i }})" aria-label="Select template {{ i }}">
                 <div class="template-canvas-wrap">
-                    <canvas class="template-canvas" data-template-id="{{ i }}"></canvas>
+                    <canvas class="template-canvas" data-template-id="{{ i }}" width="400" height="800"></canvas>
                     <div class="select-overlay">
                         <img src="/static/img/arrow.svg" alt="arrow">
                         <span>Select</span>

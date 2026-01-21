@@ -142,7 +142,7 @@
     background:white;
     opacity:0;
     pointer-events:none;
-    transition:opacity .15s;
+    transition:opacity .1s;
   }
   .flash-show {
     opacity:1;

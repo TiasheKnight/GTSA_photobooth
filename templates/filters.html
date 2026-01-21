@@ -16,7 +16,7 @@
     </div>
 
     <div class="d-flex gap-2 align-items-center mb-3">
-        <button id="startCameraBtn" type="button" class="btn btn-primary btn-lg">Enable camera</button>
+        <button id="startCameraBtn" type="button" class="btn btn-primary btn-lg d-none">Enable camera</button>
         <span id="cameraStatus" class="text-muted small"></span>
     </div>
 
@@ -28,7 +28,7 @@
                 <div class="card bg-dark border-secondary">
                     <div class="card-header border-secondary">Live preview</div>
                     <div class="card-body">
-                        <video id="webcamPreview" autoplay playsinline muted class="w-100 rounded"></video>
+                        <video id="webcamPreview" autoplay playsinline muted class="w-100 rounded" style="transform: scaleX(-1)"></video>
                     </div>
                 </div>
             </div>
@@ -36,13 +36,13 @@
                 <div class="card bg-dark border-secondary">
                     <div class="card-header border-secondary">Photostrip preview</div>
                     <div class="card-body">
-                        <canvas id="stripPreview" class="w-100 rounded border" style="max-width: 420px;"></canvas>
+                        <canvas id="stripPreview" width="400" height="800" class="w-100 rounded border" style="max-width: 420px;"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="mt-4">
+        <!-- <div class="mt-4">
             <div class="fw-semibold mb-2">Filters</div>
             <div class="d-flex flex-wrap gap-2">
                 <label class="btn btn-outline-light">
@@ -61,8 +61,170 @@
                     <input class="visually-hidden" type="radio" name="filter" value="contrast">
                     Contrast+
                 </label>
+                <label class="btn btn-outline-info d-flex align-items-center gap-1">
+                    <input class="visually-hidden" type="radio" name="filter" value="custom">
+                    Custom:
+                    <input id="customFilterInput" type="text" placeholder="e.g. blur(4px) saturate(150%)"
+                        class="form-control form-control-sm"
+                        style="width: 200px;">
+                </label>
+            </div>
+        </div> -->
+
+        <div class="mt-4">
+            <div class="fw-semibold mb-2">Filters</div>
+            
+            <!-- Main filters -->
+            <div class="d-flex flex-wrap gap-2 mb-2">
+                <label class="btn btn-outline-light">
+                <input class="visually-hidden" type="radio" name="filter" value="none" checked>
+                None
+                </label>
+                <label class="btn btn-outline-light">
+                <input class="visually-hidden" type="radio" name="filter" value="bw">
+                B&W
+                </label>
+                <label class="btn btn-outline-light">
+                <input class="visually-hidden" type="radio" name="filter" value="sepia">
+                Sepia
+                </label>
+                <label class="btn btn-outline-light">
+                <input class="visually-hidden" type="radio" name="filter" value="contrast">
+                Contrast+
+                </label>
+                
+                <!-- More dropdown -->
+                <div class="btn-group">
+                <button type="button" class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    More
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                    <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="brightness">
+                        Brightness+
+                    </label>
+                    </li>
+                    <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="saturation">
+                        Saturation+
+                    </label>
+                    </li>
+                    <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="hue-rotate">
+                        Hue Rotate
+                    </label>
+                    </li>
+                    <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="invert">
+                        Invert
+                    </label>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="film">
+                        Film
+                    </label>
+                    </li>
+                    <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="vintage">
+                        Vintage
+                    </label>
+                    </li>
+                    <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="washed">
+                        Washed
+                    </label>
+                    </li>
+                    <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="noir">
+                        Noir
+                    </label>
+                    </li>
+                    <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="lomo">
+                        lomo
+                    </label>
+                    </li>
+                    <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="dream">
+                        dream
+                    </label>
+                    </li>
+                    <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="cool">
+                        cool
+                    </label>
+                    </li>
+                    <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="warm">
+                        warm
+                    </label>
+                    </li>
+                    <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="posterize">
+                        posterize
+                    </label>
+                    </li>
+                    <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="harsh">
+                        harsh
+                    </label>
+                    </li>
+                    <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="flat">
+                        flat
+                    </label>
+                    </li>
+                                        <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="kelvin">
+                        kelvin
+                    </label>
+                    </li>
+                                        <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="clarendon">
+                        clarendon
+                    </label>
+                    </li>
+                                        <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="gingham">
+                        gingham
+                    </label>
+                    </li>
+                                        <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="moon">
+                        moon
+                    </label>
+                    </li>
+                                        <li>
+                    <label class="dropdown-item mb-0">
+                        <input class="visually-hidden" type="radio" name="filter" value="slumber">
+                        slumber
+                    </label>
+                    </li>
+                </ul>
+                </div>
             </div>
         </div>
+
 
         <div class="mt-4 d-flex gap-2">
             <button class="btn btn-success btn-lg">Start Capture</button>
@@ -73,6 +235,13 @@
 
 <script>
   const TEMPLATE_ID = "{{ template_id }}";
+  document.querySelectorAll('input[name="filter"]').forEach(input => {
+    input.addEventListener('change', () => {
+        console.log("Selected filter:", input.value);
+        // Apply your canvas filter here
+    });
+});
+
 </script>
 
 <script src="/static/js/webcam.js"></script>

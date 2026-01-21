@@ -1,35 +1,60 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container text-center py-5">
-    <h2>Get Ready!</h2>
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center">Get Ready!</h2>
+            <p class="text-center text-muted mb-4">
+                We'"'"'ll take 3 photos (every 3 seconds) and build your photostrip.
+            </p>
+        </div>
+    </div>
 
-    <p class="text-muted mb-4">
-        Tap start to enable the camera. We’ll take 3 photos (every 3 seconds) and build your photostrip.
-    </p>
+    <div class="row g-4 align-items-center">
+        <div class="col-12 col-lg-6">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header border-secondary">Camera Feed</div>
+                <div class="card-body text-center">
+                    <video id="webcam" autoplay playsinline muted class="w-100 rounded" style="max-height: 600px; object-fit: cover; transform: scaleX(-1); display: block;"></video>
+                    <div id="countdown" class="display-3 fw-bold my-3" style="height: 80px; display: flex; align-items: center; justify-content: center; color: #fff;"></div>
+                    <div id="hint" class="hint">Look at the camera! 3 photos coming up...</div>
+                </div>
+            </div>
+        </div>
 
-    <button id="startCaptureBtn" class="btn btn-primary btn-lg mb-4">
-        Start Camera & Begin
-    </button>
+        <div class="col-12 col-lg-6">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header border-secondary">Photostrip Preview</div>
+                <div class="card-body text-center">
+                    <canvas id="previewCanvas" width="400" height="800" class="border rounded" style="width: 25%; height: auto; max-height: 600px; display: block; margin: 0 auto; background: #333;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <video id="webcam" autoplay playsinline muted class="visually-hidden"></video>
-
-    <div id="countdown" class="display-1 fw-bold my-4"></div>
     <div id="flash"></div>
-    <div id="hint" class="hint">Look at the camera! 3 photos coming up...</div>
 
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <button id="startCaptureBtn" class="btn btn-success btn-lg mb-4">
+                Start Capture
+            </button>
+        </div>
+    </div>
 
-    <canvas id="previewCanvas" class="border rounded" width="400" height="800"></canvas>
-    
+    <div class="row">
+        <div class="col-12 text-center">
+            <a id="sendBtn" href="/email" class="btn btn-success btn-lg mt-4 d-none">
+                Continue
+            </a>
+            <button class="btn btn-outline-light" onclick="retry()">
+                Retry
+            </button>
+        </div>
+    </div>
 
     <input type="hidden" id="photostrip_data">
-
-    <a id="sendBtn" href="/email" class="btn btn-success btn-lg mt-4 d-none">
-        Continue
-    </a>
-    <button class="btn btn-outline-light" onclick="retry()">
-        Retry
-    </button>
 </div>
 
 <script>

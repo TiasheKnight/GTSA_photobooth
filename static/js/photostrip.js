@@ -7,7 +7,10 @@
 (() => {
   function isDarkPixel(r, g, b, a) {
     if (a < 20) return false;
-    return r < 40 && g < 40 && b < 40;
+    // Check if pixel is darker than white (more lenient)
+    // Average of RGB < 150 makes it "dark"
+    const avg = (r + g + b) / 3;
+    return avg < 150;
   }
 
   function getSourceSize(src) {
@@ -100,7 +103,9 @@
     });
 
     rects.sort((a, b) => b.w * b.h - a.w * a.h);
-    return rects.slice(0, 3).sort((a, b) => a.y - b.y);
+    const topThree = rects.slice(0, 3).sort((a, b) => a.y - b.y);
+    console.log("detectFrameRects: found", rects.length, "rectangles, returning top 3:", topThree);
+    return topThree;
   }
 
   function makeTemplateOverlayCanvas(templateImg, frameRects) {
@@ -144,8 +149,19 @@
       img.onerror = reject;
     });
 
-    const frames = detectFrameRects(img);
+    console.log("Image loaded:", img.src, "dimensions:", img.naturalWidth, img.naturalHeight);
+    
+    // Hard-coded frame positions as percentages
+    const w = img.naturalWidth;
+    const h = img.naturalHeight;
+    const frames = [
+      { x: Math.round(w * 0.04), y: Math.round(h * 0.01), w: Math.round(w * 0.91), h: Math.round(h * 0.282) },
+      { x: Math.round(w * 0.04), y: Math.round(h * 0.31), w: Math.round(w * 0.91), h: Math.round(h * 0.282) },
+      { x: Math.round(w * 0.04), y: Math.round(h * 0.61), w: Math.round(w * 0.91), h: Math.round(h * 0.282) },
+    ];
+    
     const overlay = makeTemplateOverlayCanvas(img, frames);
+    console.log("loadTemplate returning:", { img, frames, overlay });
     return { img, frames, overlay };
   }
 
