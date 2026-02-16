@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mail import Mail, Message
 import base64
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv() 
+# load_dotenv() 
 
 from config import Config
 
