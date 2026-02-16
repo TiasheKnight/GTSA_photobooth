@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mail import Mail, Message
 import base64
-from config import Config
 from dotenv import load_dotenv
 
 load_dotenv() 
+
+from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -12,6 +13,7 @@ mail = Mail(app)
 
 @app.route("/send_test_email")
 def send_test_email():
+
     msg = Message(
         subject="Photobooth Test Email",
         recipients=["ivanwu010@gmail.com"],
